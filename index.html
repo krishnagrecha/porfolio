@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krish Nagrecha — Cybersecurity &amp; Enterprise Developer</title>
+<meta name="description" content="Portfolio of Krish Nagrecha — Analyst Intern at Deloitte, cybersecurity enthusiast, and enterprise application developer.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0E16;
+    --surface: #111826;
+    --surface-2: #151F30;
+    --border: #22304A;
+    --border-soft: #1B2740;
+    --text: #DCE3F0;
+    --text-dim: #8B96AE;
+    --text-faint: #5C6784;
+    --accent: #4FD1C5;      /* phosphor cyan — SIEM/terminal */
+    --accent-dim: #2E7C74;
+    --amber: #F2A65A;       /* alert/warn */
+    --red: #E8677A;         /* critical, used sparingly */
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans', system-ui, sans-serif;
+    --maxw: 920px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* subtle scanline / crt texture, very low opacity, purely atmospheric */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background:repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.012) 0px,
+      rgba(255,255,255,0.012) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    z-index:1;
+  }
+
+  a{ color:var(--accent); text-decoration:none; }
+  a:hover{ text-decoration:underline; }
+  a:focus-visible, button:focus-visible, .navlink:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius:2px;
+  }
+
+  ::selection{ background:var(--accent-dim); color:#fff; }
+
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 24px; }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(10,14,22,0.85);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .navwrap{
+    max-width:var(--maxw); margin:0 auto; padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+    font-family:var(--mono); font-size:13px;
+  }
+  .prompt{ color:var(--accent); white-space:nowrap; }
+  .prompt .path{ color:var(--text-dim); }
+  .navlinks{ display:flex; gap:18px; flex-wrap:wrap; }
+  .navlink{ color:var(--text-dim); font-size:13px; }
+  .navlink:hover{ color:var(--accent); text-decoration:none; }
+  .navlink::before{ content:"./"; color:var(--text-faint); }
+
+  @media (max-width: 640px){
+    .navlinks{ display:none; }
+  }
+
+  /* ---------- HERO / TERMINAL ---------- */
+  .hero{ padding:64px 24px 40px; }
+  .terminal{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,0.6);
+  }
+  .term-bar{
+    display:flex; align-items:center; gap:8px;
+    padding:10px 14px;
+    background:var(--surface-2);
+    border-bottom:1px solid var(--border);
+  }
+  .dot{ width:10px; height:10px; border-radius:50%; background:var(--border); }
+  .dot.a{ background:#5c6784; }
+  .dot.b{ background:#8B96AE; opacity:0.5; }
+  .dot.c{ background:var(--accent); opacity:0.6; }
+  .term-title{ margin-left:8px; font-family:var(--mono); font-size:12px; color:var(--text-faint); }
+  .term-body{
+    padding:22px 20px 26px;
+    font-family:var(--mono);
+    font-size:14.5px;
+    min-height:180px;
+  }
+  .term-line{ margin:0 0 6px; color:var(--text); white-space:pre-wrap; }
+  .term-line .p{ color:var(--accent); }
+  .term-line .out{ color:var(--text-dim); }
+  .term-line .hi{ color:var(--text); font-weight:600; }
+  .cursor{
+    display:inline-block; width:8px; height:15px;
+    background:var(--accent); margin-left:2px;
+    animation: blink 1s steps(1) infinite;
+    vertical-align:-2px;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .cursor{ animation:none; opacity:0.7; }
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .hero-tags{
+    display:flex; gap:10px; flex-wrap:wrap;
+    margin-top:20px; font-family:var(--mono); font-size:12px;
+  }
+  .tag{
+    border:1px solid var(--border); color:var(--text-dim);
+    padding:4px 10px; border-radius:20px;
+  }
+  .tag .k{ color:var(--accent); }
+
+  /* ---------- SECTION SCAFFOLD ---------- */
+  section{ padding:56px 24px; border-top:1px solid var(--border-soft); }
+  .eyebrow{
+    font-family:var(--mono); font-size:12.5px; color:var(--accent);
+    letter-spacing:0.02em; margin:0 0 10px;
+  }
+  .eyebrow .idx{ color:var(--text-faint); }
+  h2{
+    font-family:var(--sans); font-weight:600; font-size:26px;
+    margin:0 0 18px; color:var(--text);
+  }
+  p.lead{ color:var(--text-dim); max-width:640px; font-size:15.5px; }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{ display:flex; gap:32px; flex-wrap:wrap; align-items:flex-start; }
+  .about-text{ flex:1 1 420px; }
+  .about-stats{
+    flex:0 0 220px;
+    display:flex; flex-direction:column; gap:10px;
+    font-family:var(--mono); font-size:12.5px;
+  }
+  .stat-row{
+    display:flex; justify-content:space-between; gap:12px;
+    border-bottom:1px dashed var(--border);
+    padding:8px 0; color:var(--text-dim);
+  }
+  .stat-row b{ color:var(--text); font-weight:600; }
+
+  /* ---------- SKILLS ---------- */
+  .scan-group{
+    border:1px solid var(--border); border-radius:6px;
+    margin-bottom:14px; overflow:hidden;
+  }
+  .scan-head{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 14px; background:var(--surface);
+    font-family:var(--mono); font-size:12.5px; color:var(--text-dim);
+  }
+  .scan-status{ color:var(--accent); }
+  .scan-body{ padding:14px; display:flex; flex-wrap:wrap; gap:8px; }
+  .pill{
+    font-family:var(--mono); font-size:12.5px;
+    background:var(--surface-2); color:var(--text);
+    border:1px solid var(--border-soft);
+    padding:5px 10px; border-radius:4px;
+  }
+
+  /* ---------- EXPERIENCE ---------- */
+  .log{ border-left:1px solid var(--border); padding-left:20px; position:relative; }
+  .log-entry{ position:relative; padding-bottom:26px; }
+  .log-entry:last-child{ padding-bottom:0; }
+  .log-entry::before{
+    content:""; position:absolute; left:-25px; top:4px;
+    width:9px; height:9px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--accent);
+  }
+  .log-meta{
+    font-family:var(--mono); font-size:12px; color:var(--text-faint);
+    display:flex; gap:10px; flex-wrap:wrap; margin-bottom:4px;
+  }
+  .log-meta .tag-warn{ color:var(--amber); }
+  .log-role{ font-weight:600; font-size:16px; margin:2px 0 2px; }
+  .log-org{ color:var(--text-dim); font-size:14px; margin-bottom:10px; }
+  .log ul{ margin:0; padding-left:18px; color:var(--text-dim); font-size:14.5px; }
+  .log li{ margin-bottom:6px; }
+
+  /* ---------- CERTIFICATIONS ---------- */
+  .cert-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr));
+    gap:12px;
+  }
+  .cert-card{
+    border:1px solid var(--border); border-radius:6px;
+    padding:14px; background:var(--surface);
+  }
+  .cert-name{ font-weight:600; font-size:14.5px; margin-bottom:4px; }
+  .cert-meta{ font-family:var(--mono); font-size:12px; color:var(--text-faint); }
+
+  /* ---------- EDUCATION ---------- */
+  .edu-entry{ margin-bottom:14px; }
+  .edu-degree{ font-weight:600; font-size:15px; }
+  .edu-school{ color:var(--text-dim); font-size:14px; }
+  .edu-year{ font-family:var(--mono); font-size:12px; color:var(--text-faint); }
+
+  /* ---------- PROJECTS (empty state) ---------- */
+  .empty-term{
+    border:1px dashed var(--border); border-radius:6px;
+    padding:20px; font-family:var(--mono); font-size:13.5px;
+    color:var(--text-dim); background:var(--surface);
+  }
+  .empty-term .p{ color:var(--accent); }
+  .empty-term .warn{ color:var(--amber); }
+
+  /* ---------- CONTACT ---------- */
+  .contact-list{ display:flex; flex-direction:column; gap:2px; font-family:var(--mono); font-size:14.5px; }
+  .contact-row{
+    display:flex; gap:10px; padding:10px 0;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .contact-row .p{ color:var(--accent); }
+  .contact-row a{ color:var(--text); }
+  .contact-row a:hover{ color:var(--accent); }
+  .cta-row{ margin-top:24px; display:flex; gap:12px; flex-wrap:wrap; }
+  .btn{
+    font-family:var(--mono); font-size:13px;
+    border:1px solid var(--accent); color:var(--accent);
+    padding:10px 16px; border-radius:4px; display:inline-block;
+  }
+  .btn:hover{ background:var(--accent); color:var(--bg); text-decoration:none; }
+  .btn.ghost{ border-color:var(--border); color:var(--text-dim); }
+  .btn.ghost:hover{ background:var(--surface-2); color:var(--text); }
+
+  footer{
+    padding:28px 24px 40px; text-align:center;
+    font-family:var(--mono); font-size:12px; color:var(--text-faint);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="navwrap">
+    <div class="prompt"><span class="path">guest@krish</span>:~$</div>
+    <div class="navlinks">
+      <a class="navlink" href="#about">about</a>
+      <a class="navlink" href="#skills">skills</a>
+      <a class="navlink" href="#experience">experience</a>
+      <a class="navlink" href="#certs">certs</a>
+      <a class="navlink" href="#projects">projects</a>
+      <a class="navlink" href="#contact">contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="terminal">
+      <div class="term-bar">
+        <span class="dot a"></span><span class="dot b"></span><span class="dot c"></span>
+        <span class="term-title">bash — krish@portfolio</span>
+      </div>
+      <div class="term-body" id="termBody" aria-live="polite"></div>
+    </div>
+    <div class="hero-tags">
+      <span class="tag"><span class="k">based in</span> Mumbai, IN</span>
+      <span class="tag"><span class="k">status</span> Analyst Intern @ Deloitte</span>
+      <span class="tag"><span class="k">trained</span> CEH v13</span>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap about-grid">
+    <div class="about-text">
+      <p class="eyebrow"><span class="idx">[ 00 ]</span> whoami</p>
+      <h2>About</h2>
+      <p class="lead">
+        Analyst Intern at Deloitte (Technology &amp; Transformation) with a strong
+        foundation in enterprise application development and cybersecurity. Experienced
+        in Adobe Experience Manager (AEM), Java, Maven, Core PHP, SQL, and modern
+        software development practices. Hands-on exposure to SIEM platforms,
+        vulnerability assessment, penetration testing, and Linux-based security tools
+        including Splunk, Microsoft Sentinel, Kali Linux, Nessus, Metasploit, and
+        Wireshark. Passionate about secure software development and enterprise
+        cybersecurity.
+      </p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-row"><span>education</span><b>BCA, 2023–2026</b></div>
+      <div class="stat-row"><span>focus</span><b>Sec + Enterprise Dev</b></div>
+      <div class="stat-row"><span>top score</span><b>Ethical Hacking · 92%</b></div>
+      <div class="stat-row"><span>location</span><b>Mumbai, IN</b></div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">[ 01 ]</span> skills scan</p>
+    <h2>Skills</h2>
+
+    <div class="scan-group">
+      <div class="scan-head"><span>CYBERSECURITY</span><span class="scan-status">LOADED</span></div>
+      <div class="scan-body">
+        <span class="pill">Ethical Hacking</span><span class="pill">Vulnerability Assessment</span>
+        <span class="pill">Penetration Testing</span><span class="pill">Threat Detection</span>
+        <span class="pill">Incident Investigation</span><span class="pill">Log Analysis</span>
+        <span class="pill">Network Security</span><span class="pill">SIEM</span>
+        <span class="pill">OWASP Top 10</span><span class="pill">TryHackMe</span>
+      </div>
+    </div>
+
+    <div class="scan-group">
+      <div class="scan-head"><span>SECURITY TOOLS</span><span class="scan-status">LOADED</span></div>
+      <div class="scan-body">
+        <span class="pill">Kali Linux</span><span class="pill">Metasploit</span>
+        <span class="pill">Nmap</span><span class="pill">Nessus</span>
+        <span class="pill">Wireshark</span><span class="pill">Burp Suite</span>
+        <span class="pill">Splunk</span><span class="pill">Microsoft Sentinel</span>
+        <span class="pill">Cisco Packet Tracer</span>
+      </div>
+    </div>
+
+    <div class="scan-group">
+      <div class="scan-head"><span>PROGRAMMING</span><span class="scan-status">LOADED</span></div>
+      <div class="scan-body">
+        <span class="pill">Java</span><span class="pill">Python</span><span class="pill">Bash</span>
+        <span class="pill">SQL</span><span class="pill">Core PHP</span><span class="pill">JavaScript</span>
+        <span class="pill">HTML</span><span class="pill">CSS</span>
+      </div>
+    </div>
+
+    <div class="scan-group">
+      <div class="scan-head"><span>ENTERPRISE &amp; TOOLING</span><span class="scan-status">LOADED</span></div>
+      <div class="scan-body">
+        <span class="pill">Adobe Experience Manager (AEM)</span><span class="pill">Apache Maven</span>
+        <span class="pill">Git / GitHub</span><span class="pill">Linux</span>
+        <span class="pill">Windows</span><span class="pill">macOS</span>
+      </div>
+    </div>
+
+    <div class="scan-group">
+      <div class="scan-head"><span>FRAMEWORKS</span><span class="scan-status">LOADED</span></div>
+      <div class="scan-body">
+        <span class="pill">React</span><span class="pill">Django</span>
+        <span class="pill">Laravel</span><span class="pill">Tailwind CSS</span>
+        <span class="pill">Bootstrap</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">[ 02 ]</span> experience log</p>
+    <h2>Experience</h2>
+    <div class="log">
+      <div class="log-entry">
+        <div class="log-meta">
+          <span>2026-06-01 → present</span><span class="tag-warn">CURRENT</span>
+        </div>
+        <div class="log-role">Analyst Intern — Technology &amp; Transformation</div>
+        <div class="log-org">Deloitte — Mumbai</div>
+        <ul>
+          <li>Develop and maintain enterprise web applications using Adobe Experience Manager (AEM), Java, and Apache Maven.</li>
+          <li>Support development, customization, testing, and deployment of enterprise digital solutions.</li>
+          <li>Collaborate with cross-functional teams in Agile environments.</li>
+          <li>Participate in debugging, code reviews, and application maintenance following enterprise standards.</li>
+        </ul>
+      </div>
+      <div class="log-entry">
+        <div class="log-meta">
+          <span>2025-07-01 → 2025-10-31</span><span class="tag-warn">INTERNSHIP</span>
+        </div>
+        <div class="log-role">Software Developer Intern</div>
+        <div class="log-org">Puratech Consultancy Solutions Pvt. Ltd. — Mumbai</div>
+        <ul>
+          <li>Developed responsive web applications using HTML, CSS, Bootstrap, Core PHP, and SQL.</li>
+          <li>Built CRUD-based applications with secure database integration.</li>
+          <li>Used Git and GitHub for collaborative development.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="certs">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">[ 03 ]</span> certifications</p>
+    <h2>Training &amp; Certifications</h2>
+    <div class="cert-grid">
+      <div class="cert-card">
+        <div class="cert-name">CEH v13 (Training Completed)</div>
+        <div class="cert-meta">SIMPLILEARN · Dec 2024</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-name">Splunk Knowledge Manager 101</div>
+        <div class="cert-meta">Coursera · Nov 2025</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-name">Google Cybersecurity Foundations</div>
+        <div class="cert-meta">Google · Coursera · Oct 2025</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-name">Ethical Hacking (Internshala — 92%)</div>
+        <div class="cert-meta">Internshala Trainings · Jul 2025</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-name">Deloitte Australia Cyber Job Simulation</div>
+        <div class="cert-meta">Forage · Oct 2025</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-name">Technical Support Fundamentals</div>
+        <div class="cert-meta">Google · Coursera · Jun 2025</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-name">Metasploit for Beginners</div>
+        <div class="cert-meta">Coursera · Jun 2024</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-name">Linux Shell Scripting</div>
+        <div class="cert-meta">Coursera · Jun 2024</div>
+      </div>
+      <div class="cert-card">
+        <div class="cert-name">Advent of Cyber 2025</div>
+        <div class="cert-meta">TryHackMe · Jan 2026</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">[ 04 ]</span> education</p>
+    <h2>Education</h2>
+    <div class="edu-entry">
+      <div class="edu-degree">Bachelor of Computer Applications</div>
+      <div class="edu-school">Somaiya School of Basic and Applied Sciences</div>
+      <div class="edu-year">2023 – 2026</div>
+    </div>
+    <div class="edu-entry">
+      <div class="edu-degree">Senior Secondary (XII), HSC</div>
+      <div class="edu-school">Jai Hind College</div>
+      <div class="edu-year">2021 – 2023</div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">[ 05 ]</span> projects</p>
+    <h2>Projects</h2>
+    <div class="empty-term">
+      <div><span class="p">guest@krish:~$</span> ls ./projects</div>
+      <div style="margin:6px 0;"><span class="warn">6 entries queued.</span></div>
+      <div>├── Enterprise SOC Lab (Microsoft Sentinel)</div>
+      <div>├── Active Directory Home Lab</div>
+      <div>├── Nessus Vulnerability Assessment</div>
+      <div>├── Network Traffic Analysis (Wireshark)</div>
+      <div>├── Web Application Penetration Testing (OWASP Top 10)</div>
+      <div>└── Malware Analysis Lab</div>
+      <div style="margin-top:8px;">// projects in progress — full write-ups coming soon.</div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <p class="eyebrow"><span class="idx">[ 06 ]</span> contact</p>
+    <h2>Get in touch</h2>
+    <div class="contact-list">
+      <div class="contact-row"><span class="p">phone</span><a href="tel:+919930457888">+91 9930457888</a></div>
+      <div class="contact-row"><span class="p">email</span><a href="mailto:krishnagrecha@gmail.com">krishnagrecha@gmail.com</a></div>
+      <div class="contact-row"><span class="p">github</span><a href="https://github.com/krishnagrecha" target="_blank" rel="noopener">github.com/krishnagrecha</a></div>
+      <div class="contact-row"><span class="p">linkedin</span><a href="https://linkedin.com/in/krishnagrecha" target="_blank" rel="noopener">linkedin.com/in/krishnagrecha</a></div>
+    </div>
+    <div class="cta-row">
+      <a class="btn" href="mailto:krishnagrecha@gmail.com">Send an email</a>
+      <a class="btn ghost" href="./Krish_Nagrecha_Resume_Draft.pdf" target="_blank" rel="noopener">Download résumé</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  // krish nagrecha — built to be edited. swap content in index.html, keep the terminal.
+</footer>
+
+<script>
+  (function(){
+    var body = document.getElementById('termBody');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var lines = [
+      { p: true,  text: 'whoami' },
+      { out: true, text: 'Krish Nagrecha — Analyst Intern @ Deloitte | Cybersecurity & Enterprise Developer' },
+      { p: true,  text: 'cat status.txt' },
+      { out: true, text: 'CEH v13 trained · AEM · Java · SOC-ready · building secure enterprise solutions' }
+    ];
+
+    function renderStatic(){
+      var html = '';
+      lines.forEach(function(l){
+        if(l.p){
+          html += '<p class="term-line"><span class="p">guest@krish:~$</span> ' + l.text + '</p>';
+        } else {
+          html += '<p class="term-line out">' + l.text + '</p>';
+        }
+      });
+      html += '<p class="term-line"><span class="p">guest@krish:~$</span> <span class="cursor"></span></p>';
+      body.innerHTML = html;
+    }
+
+    if(reduced){
+      renderStatic();
+      return;
+    }
+
+    var lineIndex = 0;
+
+    function typeLine(){
+      if(lineIndex >= lines.length){
+        var cur = document.createElement('p');
+        cur.className = 'term-line';
+        cur.innerHTML = '<span class="p">guest@krish:~$</span> <span class="cursor"></span>';
+        body.appendChild(cur);
+        return;
+      }
+
+      var l = lines[lineIndex];
+      var p = document.createElement('p');
+      p.className = 'term-line' + (l.out ? ' out' : '');
+      body.appendChild(p);
+
+      if(l.p){
+        p.innerHTML = '<span class="p">guest@krish:~$</span> ';
+        var span = document.createElement('span');
+        p.appendChild(span);
+        typeChars(span, l.text, function(){
+          lineIndex++;
+          setTimeout(typeLine, 200);
+        });
+      } else {
+        typeChars(p, l.text, function(){
+          lineIndex++;
+          setTimeout(typeLine, 250);
+        }, true);
+      }
+    }
+
+    function typeChars(el, text, done, append){
+      var i = 0;
+      var prefix = append ? '' : '';
+      function step(){
+        if(i <= text.length){
+          el.textContent = text.slice(0, i);
+          i++;
+          setTimeout(step, 16 + Math.random()*18);
+        } else {
+          done();
+        }
+      }
+      step();
+    }
+
+    typeLine();
+  })();
+</script>
+
+</body>
+</html>
